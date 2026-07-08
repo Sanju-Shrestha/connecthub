@@ -1,0 +1,50 @@
+<div class="border rounded p-3 mb-3">
+
+    <div class="d-flex justify-content-between">
+
+        <div>
+
+            <strong>
+
+                {{ comment.author.get_full_name|default:comment.author.username }}
+
+            </strong>
+
+            <br>
+
+            <small class="text-muted">
+
+                {{ comment.created_at|date:"M d, Y H:i" }}
+
+            </small>
+
+        </div>
+
+        {% if request.user == comment.author or request.user == post.author %}
+
+        <form method="post"
+              action="{% url 'posts:delete_comment' comment.pk %}">
+
+            {% csrf_token %}
+
+            <button class="btn btn-sm btn-outline-danger">
+
+                Delete
+
+            </button>
+
+        </form>
+
+        {% endif %}
+
+    </div>
+
+    <hr>
+
+    <p class="mb-0">
+
+        {{ comment.content|linebreaks }}
+
+    </p>
+
+</div>

@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% load connecthub_tags %}
+
+{% block title %}Post Details{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4" style="max-width:850px;">
+
+    <a href="{% url 'posts:post_list' %}"
+       class="btn btn-outline-secondary mb-3">
+
+        ← Back to Feed
+
+    </a>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <!-- Author -->
+
+            <div class="d-flex align-items-center">
+
+                <i class="bi bi-person-circle display-6 me-3"></i>
+
+                <div>
+
+                    <h5 class="mb-0">
+
+                        <a href="{% url 'posts:user_posts' post.author.username %}"
+                           class="text-decoration-none">
+
+                            {{ post.author.get_full_name|default:post.author.username }}
+
+                        </a>
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        <!-- {{ post.created_at|date:"M d, Y H:i" }} -->
+                        {{ post.created_at| time_since_short }}
+
+                    </small>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <!-- Content -->
+
+            <p class="fs-5">
+
+                {{ post.content|linebreaks }}
+
+            </p>
+
+            {% if post.image %}
+
+            <div class="text-center">
+
+                <img src="{{ post.image.url }}"
+                     class="img-fluid rounded">
+
+            </div>
+
+            {% endif %}
+
+            <hr>
+
+            <!-- Counts -->
+
+            <div class="d-flex justify-content-between">
+
+                <span>
+
+                    ❤️ {{ like_count }} Like{{ like_count|pluralize }}
+
+                </span>
+
+                <span>
+
+                    💬 {{ comment_count }} Comment{{ comment_count|pluralize }}
+
+                </span>
+
+            </div>
+
+            <hr>
+
+            <!-- Like -->
+            <!--  -->
+            {% if perms.posts.can_like_post %}
+            <!--  -->
+            <form method="post"
+                  action="{% url 'posts:like_post' post.pk %}">
+
+                {% csrf_token %}
+
+                <button class="btn btn-outline-danger">
+
+                    {% if is_liked %}
+
+                        ❤️ Unlike
+
+                    {% else %}
+
+                        🤍 Like
+
+                    {% endif %}
+
+                </button>
+
+            </form>
+            <!--  -->
+            {% endif %}
+            <!--  -->
+            {% if is_author %}
+
+            <a href="{% url 'posts:post_delete' post.pk %}"
+               class="btn btn-outline-danger mt-3">
+
+                Delete Post
+
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- Comments -->
+
+    <div class="card mt-4 shadow">
+
+        <div class="card-header">
+
+            <h5>
+
+                Comments ({{ comment_count }})
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            {% if comments %}
+
+                {% for comment in comments %}
+
+                    {% include "posts/includes/comment.html" %}
+
+                {% endfor %}
+
+            {% else %}
+
+                <p class="text-muted">
+
+                    No comments yet.
+
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- Comment Form -->
+
+    <div class="card mt-4 shadow">
+
+        <div class="card-header">
+
+            Add Comment
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="post"
+                  action="{% url 'posts:add_comment' post.pk %}">
+
+                {% csrf_token %}
+
+                {{ comment_form.as_p }}
+
+                <button class="btn btn-primary">
+
+                    Post Comment
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
