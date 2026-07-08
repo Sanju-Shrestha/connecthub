@@ -208,10 +208,6 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-GENERATIVE_AI_KEY = config('GENERATIVE_AI_KEY')
-
-if not GENERATIVE_AI_KEY:
-    raise ValueError('GENERATIVE_AI_KEY environment variable not set')
     
     
 CONN_MAX_AGE = 60
