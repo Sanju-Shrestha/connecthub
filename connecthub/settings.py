@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'accounts',
     'posts',
     'api',
-    'chatbotapp',
+ 
     
     
 ]
